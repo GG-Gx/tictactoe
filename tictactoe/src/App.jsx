@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import confetti from 'canvas-confetti'
 import './App.css'
 const TURNS = {
   X: 'X',
@@ -36,6 +35,7 @@ function App() {
   const [board, setBoard] =useState( Array(9).fill(null));
   const [turn, setTurn] = useState(TURNS.X);
   const [winner, setWinner] = useState(null);
+  
 
   const checkWinner = (boardToCheck) => {
     for (const combo of WINNER_COMBOS){
@@ -61,10 +61,30 @@ function App() {
     setTurn(newTurn)
 
     const newWinner = checkWinner(newBoard)
-    if(newWinner){
-      setWinner(newWinner)
+      if (newWinner){
+        setWinner(newWinner)
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
     }
-  };
+
+  }
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setTurn(TURNS.X);
+    setWinner(null);
+  }
+
+  const checkEnnGame = board.every((square) => square !== null);
+  if (winner === null && checkEnnGame){
+    setWinner('TIE');
+  }
+
+  
+  ;
 
   return (
     <main className='board'>
@@ -98,6 +118,13 @@ function App() {
             className='text'
             >
                           <h2>{winner === 'X' || winner === 'O' ? `Player ${winner} wins!` : 'It\'s a tie!'}</h2>
+
+                          <footer>
+                            <button onClick={resetGame}>
+                              <span>Play Again</span>
+                            </button>
+                            
+                          </footer>
 
             </div>
           </section>
